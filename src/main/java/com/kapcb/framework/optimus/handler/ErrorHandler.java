@@ -10,5 +10,9 @@ package com.kapcb.framework.optimus.handler;
  * @date 2021/12/4 19:41
  * @since 1.0
  */
-public interface ErrorHandler {
+public interface ErrorHandler extends Handler<RuntimeException> {
+
+    @Override
+    void handler(RuntimeException runtimeException);
+
 }
