@@ -20,7 +20,7 @@ public class SimpleKey implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final SimpleKey empty = new SimpleKey();
+    public static final SimpleKey EMPTY = new SimpleKey();
 
     private final int hashCode;
 
