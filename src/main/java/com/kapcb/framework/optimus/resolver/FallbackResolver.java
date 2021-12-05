@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * @date 2021/12/4 19:55
  * @since 1.0
  */
-public interface FallbackResolver extends Resolver<T> {
+public interface FallbackResolver {
 
     T resolve(Method method, Class<?> clazz, Object[] args, String key);
 

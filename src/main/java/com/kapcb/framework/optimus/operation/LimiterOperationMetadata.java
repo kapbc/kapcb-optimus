@@ -1,6 +1,7 @@
 package com.kapcb.framework.optimus.operation;
 
 import com.kapcb.framework.optimus.argument.ArgumentInjector;
+import com.kapcb.framework.optimus.context.LimiterOperationContext;
 import com.kapcb.framework.optimus.handler.ErrorHandler;
 import com.kapcb.framework.optimus.key.KeyGenerator;
 import com.kapcb.framework.optimus.limit.Limiter;
@@ -12,7 +13,6 @@ import org.springframework.core.BridgeMethodResolver;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.security.Key;
 import java.util.Collection;
 
 /**
@@ -50,5 +50,21 @@ public class LimiterOperationMetadata {
         this.argumentInjectors = argumentInjectors;
         this.fallbackResolver = fallbackResolver;
         this.errorHandler = errorHandler;
+    }
+
+    public Object resolveLimiterFail(Object[] args) {
+        return this.fallbackResolver.resolve(this.method, this.targetClass, args, this.limiterOperation.getKey());
+    }
+
+    public ErrorHandler getErrorHandler(){
+        return this.errorHandler;
+    }
+
+    public Method getMethod(){
+        return this.method;
+    }
+
+    public Limiter getLimiter(LimiterOperationContext limiterOperationContext){
+        this.limiterResolver.
     }
 }
