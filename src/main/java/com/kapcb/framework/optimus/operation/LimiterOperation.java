@@ -1,8 +1,9 @@
 package com.kapcb.framework.optimus.operation;
 
+import com.kapcb.framework.common.constants.enums.StringPool;
 import com.kapcb.framework.optimus.limit.Limiter;
-import com.kapcb.framework.optimus.model.Arg;
-import com.kapcb.framework.optimus.model.Argument;
+import com.kapcb.framework.optimus.manager.LimiterManager;
+import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
  * @date 2021/12/4 21:14
  * @since 1.0
  */
-public abstract class LimiterOperation<T extends Limiter> implements Operation<LimiterOperation> {
+public abstract class LimiterOperation<T extends Limiter> {
 
     private final String name;
 
@@ -39,13 +40,97 @@ public abstract class LimiterOperation<T extends Limiter> implements Operation<L
 
     private final Map<String, Object> customArgument;
 
-
-
-
-    public abstract LimiterOperation buildOperation();
-
-    @Override
-    public LimiterOperation build() {
-        return buildOperation();
+    public String getName() {
+        return this.name;
     }
+
+    public String getLimiterName() {
+        return this.limiterName;
+    }
+
+    public String getKeyGenerator() {
+        return this.keyGenerator;
+    }
+
+    public String getLimiterManager() {
+        return this.limiterManager;
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public String getCondition() {
+        return this.condition;
+    }
+
+    public String getFallbackResolver() {
+        return this.fallbackResolver;
+    }
+
+    public String getErrorHandler() {
+        return this.errorHandler;
+    }
+
+    public Collection<String> getArgumentInjectors() {
+        return this.argumentInjectors;
+    }
+
+    public Map<String, Object> getCustomArgument() {
+        return this.customArgument;
+    }
+
+    public abstract Class<? extends LimiterManager<T>> getDefaultLimiterManagerClass();
+
+    protected LimiterOperation(Builder builder) {
+        this.name = builder.name;
+        this.limiterName = builder.limiterName;
+        this.keyGenerator = builder.keyGenerator;
+        this.limiterManager = builder.limiterManager;
+        this.key = builder.key;
+        this.condition = builder.condition;
+        this.fallbackResolver = builder.fallbackResolver;
+        this.errorHandler = builder.errorHandler;
+        this.argumentInjectors = builder.argumentInjectors;
+        this.customArgument = builder.customArgument;
+    }
+
+    protected static abstract class Builder {
+
+        private String name = StringPool.EMPTY_STRING.value();
+        private String limiterName = StringPool.EMPTY_STRING.value();
+        private String keyGenerator = StringPool.EMPTY_STRING.value();
+        private String limiterManager = StringPool.EMPTY_STRING.value();
+        private String key = StringPool.EMPTY_STRING.value();
+        private String condition = StringPool.EMPTY_STRING.value();
+        private String fallbackResolver;
+        private String errorHandler;
+        private Collection<String> argumentInjectors;
+        private Map<String, Object> customArgument;
+
+        public LimiterOperation.Builder name(String name) {
+            Assert.notNull(name, "name can not be null");
+            this.name = name;
+            return this;
+        }
+
+        public LimiterOperation.Builder limiterName(String limiterName) {
+            Assert.notNull(limiterName, "limiter name can not be null");
+            this.limiterName = limiterName;
+            return this;
+        }
+
+        public LimiterOperation.Builder keyGenerator(String keyGenerator) {
+            Assert.notNull(keyGenerator, "key generator can not be null");
+            return this;
+        }
+
+        public LimiterOperation.Builder key(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public abstract LimiterOperation<? extends Limiter> build();
+    }
+
 }
