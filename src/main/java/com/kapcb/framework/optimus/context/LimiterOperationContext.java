@@ -3,6 +3,7 @@ package com.kapcb.framework.optimus.context;
 import com.kapcb.framework.optimus.limit.Limiter;
 import com.kapcb.framework.optimus.operation.LimiterOperation;
 import com.kapcb.framework.optimus.spel.LimiterOperationExpressionEvaluator;
+import org.springframework.beans.factory.BeanFactory;
 
 import java.lang.reflect.Method;
 
@@ -18,6 +19,8 @@ import java.lang.reflect.Method;
  */
 public class LimiterOperationContext implements LimiterOperationInvocationContext {
 
+    
+    private final BeanFactory beanFactory;
     private final Object target;
     private final Object[] args;
     private final Limiter limiter;
