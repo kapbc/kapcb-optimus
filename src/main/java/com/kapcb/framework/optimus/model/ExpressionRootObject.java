@@ -1,4 +1,4 @@
-package com.kapcb.framework.optimus.spel;
+package com.kapcb.framework.optimus.model;
 
 /**
  * <a>Title: ExpressionRootObject </a>

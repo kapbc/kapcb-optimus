@@ -2,6 +2,7 @@ package com.kapcb.framework.optimus.context;
 
 import com.kapcb.framework.optimus.limit.Limiter;
 import com.kapcb.framework.optimus.operation.LimiterOperation;
+import com.kapcb.framework.optimus.spel.LimiterOperationExpressionEvaluator;
 
 import java.lang.reflect.Method;
 
@@ -15,7 +16,13 @@ import java.lang.reflect.Method;
  * @date 2021/12/5 15:27
  * @since 1.0
  */
-public class LimiterOperationContext implements LimiterOperationInvocationContext{
+public class LimiterOperationContext implements LimiterOperationInvocationContext {
+
+    private final Object target;
+    private final Object[] args;
+    private final Limiter limiter;
+    private final LimiterOperationExpressionEvaluator limiterOperationExpressionEvaluator;
+
 
     @Override
     public LimiterOperation<? extends Limiter> getLimiterOperation() {
