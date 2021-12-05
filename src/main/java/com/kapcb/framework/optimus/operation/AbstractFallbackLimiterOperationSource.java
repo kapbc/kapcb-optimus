@@ -2,8 +2,9 @@ package com.kapcb.framework.optimus.operation;
 
 import com.kapcb.framework.optimus.limit.Limiter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.core.MethodClassKey;
+import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -39,8 +40,30 @@ public abstract class AbstractFallbackLimiterOperationSource implements LimiterO
     private Collection<LimiterOperation<? extends Limiter>> computeLimiterOperations(Method method, Class<?> targetClass) {
         if (this.allowPublicMethodOnly() && Modifier.isPublic(method.getModifiers())) {
             return null;
-        }else {
+        } else {
+            Method mostSpecificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
+            Collection<LimiterOperation<? extends Limiter>> limiterOperations = this.findLimiterOperations(mostSpecificMethod);
+            if (limiterOperations != null) {
+                return limiterOperations;
+            } else {
+                limiterOperations = this.findLimiterOperations(mostSpecificMethod.getDeclaringClass());
+                if (limiterOperations != null && ClassUtils.isUserLevelMethod(method)) {
+                    return limiterOperations;
+                } else {
+                    if (mostSpecificMethod != method) {
+                        limiterOperations = this.findLimiterOperations(method);
+                        if (limiterOperations != null) {
+                            return limiterOperations;
+                        }
 
+                        limiterOperations = this.findLimiterOperations(method.getDeclaringClass());
+                        if (limiterOperations != null) {
+                            return limiterOperations;
+                        }
+                    }
+                    return null;
+                }
+            }
         }
     }
 
@@ -62,11 +85,15 @@ public abstract class AbstractFallbackLimiterOperationSource implements LimiterO
             if (cached != null) {
                 return cached != NULL_CACHING_ATTRIBUTE ? cached : null;
             } else {
-
+                Collection<LimiterOperation<? extends Limiter>> cacheLimiterOperations = this.computeLimiterOperations(method, clazz);
+                if (cacheLimiterOperations != null) {
+                    this.attributeCache.put(cacheKey, cacheLimiterOperations);
+                } else {
+                    this.attributeCache.put(cacheKey, NULL_CACHING_ATTRIBUTE);
+                }
+                return cacheLimiterOperations;
             }
-
         }
-
-
     }
+
 }
