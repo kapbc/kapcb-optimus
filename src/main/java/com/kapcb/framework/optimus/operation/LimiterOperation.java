@@ -109,24 +109,58 @@ public abstract class LimiterOperation<T extends Limiter> {
         private Map<String, Object> customArgument;
 
         public LimiterOperation.Builder name(String name) {
-            Assert.notNull(name, "name can not be null");
+            Assert.hasLength(name, "name can not be null");
             this.name = name;
             return this;
         }
 
         public LimiterOperation.Builder limiterName(String limiterName) {
-            Assert.notNull(limiterName, "limiter name can not be null");
+            Assert.hasLength(limiterName, "limiter name can not be null");
             this.limiterName = limiterName;
             return this;
         }
 
         public LimiterOperation.Builder keyGenerator(String keyGenerator) {
-            Assert.notNull(keyGenerator, "key generator can not be null");
+            Assert.hasLength(keyGenerator, "key generator can not be null");
+            this.keyGenerator = keyGenerator;
+            return this;
+        }
+
+        public LimiterOperation.Builder limiterManager(String limiterManager) {
+            Assert.hasLength(limiterManager, "limiter manager can not be null");
+            this.limiterManager = limiterManager;
             return this;
         }
 
         public LimiterOperation.Builder key(String key) {
+            Assert.hasLength(key, "key can not be null");
             this.key = key;
+            return this;
+        }
+
+        public LimiterOperation.Builder condition(String condition) {
+            Assert.hasLength(condition, "condition can not be null");
+            this.condition = condition;
+            return this;
+        }
+
+        public LimiterOperation.Builder fallbackResolver(String fallbackResolver) {
+            this.fallbackResolver = fallbackResolver;
+            return this;
+        }
+
+        public LimiterOperation.Builder errorHandler(String errorHandler) {
+            this.errorHandler = errorHandler;
+            return this;
+        }
+
+        public LimiterOperation.Builder argumentInjectors(Collection<String> argumentInjectors) {
+            this.argumentInjectors = argumentInjectors;
+            return this;
+        }
+
+        public LimiterOperation.Builder customArgument(Map<String, Object> customArgument) {
+            this.customArgument = customArgument;
             return this;
         }
 
