@@ -101,7 +101,6 @@ public class CustomerExpressionEvaluator {
             }
             return result;
         }
-
     }
 
 }
