@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
  */
 public class LimiterOperationContext implements LimiterOperationInvocationContext {
 
-
     private final BeanFactory beanFactory;
     private final Object target;
     private final Object[] args;
@@ -53,4 +52,5 @@ public class LimiterOperationContext implements LimiterOperationInvocationContex
     public Object[] getArgs() {
         return new Object[0];
     }
+
 }
