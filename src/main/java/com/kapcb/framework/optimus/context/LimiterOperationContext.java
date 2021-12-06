@@ -19,13 +19,20 @@ import java.lang.reflect.Method;
  */
 public class LimiterOperationContext implements LimiterOperationInvocationContext {
 
-    
+
     private final BeanFactory beanFactory;
     private final Object target;
     private final Object[] args;
     private final Limiter limiter;
     private final LimiterOperationExpressionEvaluator limiterOperationExpressionEvaluator;
 
+    public LimiterOperationContext(BeanFactory beanFactory, Object target, Object[] args, Limiter limiter, LimiterOperationExpressionEvaluator limiterOperationExpressionEvaluator) {
+        this.beanFactory = beanFactory;
+        this.target = target;
+        this.args = args;
+        this.limiter = limiter;
+        this.limiterOperationExpressionEvaluator = limiterOperationExpressionEvaluator;
+    }
 
     @Override
     public LimiterOperation<? extends Limiter> getLimiterOperation() {
