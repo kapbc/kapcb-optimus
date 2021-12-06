@@ -11,5 +11,4 @@ package com.kapcb.framework.optimus;
  * @since 1.0
  */
 public interface Behavior {
-
 }
