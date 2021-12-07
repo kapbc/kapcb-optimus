@@ -65,6 +65,10 @@ public class LimiterOperationMetadata {
     }
 
     public Limiter getLimiter(LimiterOperationContext limiterOperationContext){
-        this.limiterResolver.
+//        this.limiterResolver
+    }
+
+    public LimiterOperation<? extends Limiter> getLimiterOperation(){
+        return this.limiterOperation;
     }
 }
