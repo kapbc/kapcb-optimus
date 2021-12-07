@@ -56,20 +56,43 @@ public class LimiterOperationMetadata {
         return this.fallbackResolver.resolve(this.method, this.targetClass, args, this.limiterOperation.getKey());
     }
 
-    public ErrorHandler getErrorHandler(){
+    public ErrorHandler getErrorHandler() {
         return this.errorHandler;
     }
 
-    public Method getMethod(){
+    public Method getMethod() {
         return this.method;
     }
 
-    public Limiter getLimiter(LimiterOperationContext limiterOperationContext){
-//        this.limiterResolver
+    public Limiter getLimiter(LimiterOperationContext limiterOperationContext) {
+        return this.limiterResolver.resolveLimiter(limiterOperationContext);
     }
 
-    public LimiterOperation<? extends Limiter> getLimiterOperation(){
+    public LimiterOperation<? extends Limiter> getLimiterOperation() {
         return this.limiterOperation;
     }
 
+    public AnnotatedElementKey getAnnotatedElementKey() {
+        return this.annotatedElementKey;
+    }
+
+    public KeyGenerator getKeyGenerator() {
+        return this.keyGenerator;
+    }
+
+    public Method getTargetMethod() {
+        return this.targetMethod;
+    }
+
+    public Class<?> getTargetClass() {
+        return this.targetClass;
+    }
+
+    public Collection<ArgumentInjector> getArgumentInjectors() {
+        return this.argumentInjectors;
+    }
+
+    public Map<String, Object> getCustomArgument() {
+        return this.getLimiterOperation().getCustomArgument();
+    }
 }

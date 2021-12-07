@@ -1,5 +1,7 @@
 package com.kapcb.framework.optimus.resolver;
 
+import com.kapcb.framework.optimus.context.LimiterOperationInvocationContext;
+import com.kapcb.framework.optimus.operation.LimiterOperation;
 import org.apache.poi.ss.formula.functions.T;
 
 /**
@@ -12,8 +14,8 @@ import org.apache.poi.ss.formula.functions.T;
  * @date 2021/12/4 19:57
  * @since 1.0
  */
-public interface LimiterResolver {
+public interface LimiterResolver<T extends LimiterOperation> {
 
-    T resolve();
+    T resolveLimiter(LimiterOperationInvocationContext<T> limiterOperationInvocationContext);
 
 }
