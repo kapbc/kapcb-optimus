@@ -1,13 +1,22 @@
 package com.kapcb.framework.optimus.context;
 
+import com.kapcb.framework.optimus.argument.ArgumentInjector;
+import com.kapcb.framework.optimus.key.KeyGenerator;
 import com.kapcb.framework.optimus.limit.Limiter;
 import com.kapcb.framework.optimus.operation.LimiterOperation;
 import com.kapcb.framework.optimus.operation.LimiterOperationMetadata;
+import com.kapcb.framework.optimus.spel.CustomerEvaluationContext;
+import com.kapcb.framework.optimus.spel.CustomerExpressionEvaluator;
 import com.kapcb.framework.optimus.spel.LimiterOperationExpressionEvaluator;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <a>Title: LimiterOperationContext </a>
@@ -75,4 +84,50 @@ public class LimiterOperationContext implements LimiterOperationInvocationContex
         return this.args;
     }
 
+    public Map<String, Object> getCustomArgument() {
+        return this.getLimiterOperation().getCustomArgument();
+    }
+
+    protected KeyGenerator generateKey(Map<String, Object> injectArgs) {
+        if (StringUtils.hasText(this.getLimiterOperation().getKey())) {
+            CustomerEvaluationContext customerEvaluationContext = customerEvaluationContext(injectArgs);
+            return limiterOperationExpressionEvaluator.key(this.limiterOperationMetadata.getLimiterOperation().getKey(), this.limiterOperationMetadata.getAnnotatedElementKey(), customerEvaluationContext);
+        }
+        return this.limiterOperationMetadata.getKeyGenerator().generate(this.target, this.limiterOperationMetadata.getMethod(), this.args);
+    }
+
+    public LimiterOperationMetadata getLimiterOperationMetadata() {
+        return this.limiterOperationMetadata;
+    }
+
+    public Limiter getLimiter() {
+        return this.limiter;
+    }
+
+    public Map<String, Object> generateInjectArgs() {
+        Map<String, Object> returnValue = new HashMap<>(4);
+        if (CollectionUtils.isEmpty(this.limiterOperationMetadata.getArgumentInjectors())) {
+            return returnValue;
+        }
+
+        for (ArgumentInjector argumentInjector : this.limiterOperationMetadata.getArgumentInjectors()) {
+            Map<String, Object> inject = argumentInjector.inject(this.args);
+            if (MapUtils.isNotEmpty(inject)) {
+                returnValue.put(inject);
+            }
+        }
+        return returnValue;
+    }
+
+    private CustomerEvaluationContext customerEvaluationContext(Map<String, Object> injectArgs) {
+        return limiterOperationExpressionEvaluator.createCustomerEvaluationContext(this.limiter, this.limiterOperationMetadata.getMethod(), this.args, this.target, this.limiterOperationMetadata.getTargetMethod(), this.limiterOperationMetadata.getTargetClass(), args, this.beanFactory);
+    }
+
+    protected boolean conditionPass(Map<String, Object> injectArgs) {
+        if (StringUtils.hasText(this.limiterOperationMetadata.getLimiterOperation().getCondition())) {
+            CustomerEvaluationContext customerEvaluationContext = customerEvaluationContext(injectArgs);
+            return limiterOperationExpressionEvaluator.condition(this.limiterOperationMetadata.getLimiterOperation().getCondition(), this.limiterOperationMetadata.getAnnotatedElementKey(), customerEvaluationContext);
+        }
+        return false;
+    }
 }
