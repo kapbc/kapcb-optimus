@@ -11,4 +11,6 @@ package com.kapcb.framework.optimus.configuration;
  * @since 1.0
  */
 public interface OptimusGlobalConfiguration {
+
+
 }
