@@ -14,6 +14,12 @@ import java.util.Map;
  */
 public interface ArgumentInjector extends Injector<Map<String, Object>> {
 
+    /**
+     * argument inject
+     *
+     * @param objects Object...
+     * @return Map<String, Object>
+     */
     @Override
     Map<String, Object> inject(Object... objects);
 
