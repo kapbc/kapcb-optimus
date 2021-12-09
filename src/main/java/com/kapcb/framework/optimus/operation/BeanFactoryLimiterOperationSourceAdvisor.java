@@ -1,5 +1,7 @@
 package com.kapcb.framework.optimus.operation;
 
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 
 /**
@@ -16,5 +18,26 @@ public class BeanFactoryLimiterOperationSourceAdvisor extends AbstractBeanFactor
 
     private LimiterOperationSource limiterOperationSource;
 
+    private final LimiterOperationSourcePointcut limiterOperationSourcePointcut = new LimiterOperationSourcePointcut() {
+        @Override
+        protected LimiterOperationSource getLimiterOperationSource() {
+            return BeanFactoryLimiterOperationSourceAdvisor.this.limiterOperationSource;
+        }
+    };
 
+    public BeanFactoryLimiterOperationSourceAdvisor() {
+    }
+
+    public void setLimiterOperationSource(LimiterOperationSource limiterOperationSource) {
+        this.limiterOperationSource = limiterOperationSource;
+    }
+
+    public void setClassFilter(ClassFilter classFilter) {
+        this.limiterOperationSourcePointcut.setClassFilter(classFilter);
+    }
+
+    @Override
+    public Pointcut getPointcut() {
+        return this.limiterOperationSourcePointcut;
+    }
 }
