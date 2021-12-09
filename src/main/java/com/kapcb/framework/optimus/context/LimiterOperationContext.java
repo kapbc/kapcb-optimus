@@ -1,12 +1,10 @@
 package com.kapcb.framework.optimus.context;
 
 import com.kapcb.framework.optimus.argument.ArgumentInjector;
-import com.kapcb.framework.optimus.key.KeyGenerator;
 import com.kapcb.framework.optimus.limit.Limiter;
 import com.kapcb.framework.optimus.operation.LimiterOperation;
 import com.kapcb.framework.optimus.operation.LimiterOperationMetadata;
 import com.kapcb.framework.optimus.spel.CustomerEvaluationContext;
-import com.kapcb.framework.optimus.spel.CustomerExpressionEvaluator;
 import com.kapcb.framework.optimus.spel.LimiterOperationExpressionEvaluator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -66,7 +64,7 @@ public class LimiterOperationContext implements LimiterOperationInvocationContex
 
     @Override
     public LimiterOperation<? extends Limiter> getLimiterOperation() {
-        return this.limiterOperationMetadata.getLimiter();
+        return this.limiterOperationMetadata.getLimiterOperation();
     }
 
     @Override
@@ -88,7 +86,7 @@ public class LimiterOperationContext implements LimiterOperationInvocationContex
         return this.getLimiterOperation().getCustomArgument();
     }
 
-    protected KeyGenerator generateKey(Map<String, Object> injectArgs) {
+    protected Object generateKey(Map<String, Object> injectArgs) {
         if (StringUtils.hasText(this.getLimiterOperation().getKey())) {
             CustomerEvaluationContext customerEvaluationContext = customerEvaluationContext(injectArgs);
             return limiterOperationExpressionEvaluator.key(this.limiterOperationMetadata.getLimiterOperation().getKey(), this.limiterOperationMetadata.getAnnotatedElementKey(), customerEvaluationContext);
@@ -113,14 +111,14 @@ public class LimiterOperationContext implements LimiterOperationInvocationContex
         for (ArgumentInjector argumentInjector : this.limiterOperationMetadata.getArgumentInjectors()) {
             Map<String, Object> inject = argumentInjector.inject(this.args);
             if (MapUtils.isNotEmpty(inject)) {
-                returnValue.put(inject);
+                returnValue.putAll(inject);
             }
         }
         return returnValue;
     }
 
     private CustomerEvaluationContext customerEvaluationContext(Map<String, Object> injectArgs) {
-        return limiterOperationExpressionEvaluator.createCustomerEvaluationContext(this.limiter, this.limiterOperationMetadata.getMethod(), this.args, this.target, this.limiterOperationMetadata.getTargetMethod(), this.limiterOperationMetadata.getTargetClass(), args, this.beanFactory);
+        return limiterOperationExpressionEvaluator.createCustomerEvaluationContext(this.limiter, this.limiterOperationMetadata.getMethod(), this.args, this.target, this.limiterOperationMetadata.getTargetMethod(), this.limiterOperationMetadata.getTargetClass(), injectArgs, this.beanFactory);
     }
 
     protected boolean conditionPass(Map<String, Object> injectArgs) {
